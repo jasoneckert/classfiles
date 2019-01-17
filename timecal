@@ -1,0 +1,5 @@
+:
+# Prints today's date and this month's calendar.
+date
+echo -e "\n"
+cal 

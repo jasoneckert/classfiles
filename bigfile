@@ -1,0 +1,361 @@
+  man(C)
+  ******
+
+  
+  man -- display reference manual pages 
+
+  Syntax
+  ======
+
+  man [ -a | -f ] [ -bcw ] [ -d dir ] [ -t proc ] [ -T term ] [ section ] title
+
+  man -e command ...
+
+  man -k keyword ...
+
+  Description
+  ===========
+
+  man locates and prints the entry named title from the designated reference
+   section. For historical reasons, ``page'' is often used as a synonym for
+  ``entry'' in this context.
+
+  Since UNIX commands are given in lowercase, the title is almost always
+  entered in lowercase. If no section is specified, the whole guide is
+  searched for title and the first occurrence of it is printed. You can
+  search for a group of sections by separating the section names with colons
+  (:) on the command line.
+
+  There are instances where title contains mixed upper and lowercase letters.
+  The Intro pages are one such example. Others are to be found in sections
+  covering internal routines such as (K) and (S).
+
+  man prints a usage message if invoked without any options or arguments.
+
+  man understands the following options:
+
+  -a      ALL mode. Incompatible with --ff option. Display all manual pages with
+          matching titles. This option is equivalent to specifying MODE=ALL
+          in /etc/default/man.
+
+  -b      Leave blank lines in output. Entries are normally padded with blank
+          lines for line printer purposes; without this option, man filters
+          out excess blank lines and does not display more than 2 consecutive
+          blank lines.
+
+  -c      Invoke col(C) if the display does not support character formatting.
+          Note that ccooll is invoked automatically by man unless the terminal
+          (defined by -T term) is one of the following: 300, 300s, 450, 37,
+          4000a, 382, 4014, tek, 1620, or X.
+
+  -d dir  Specify directory dir to be added to the search path for entries.
+          You can specify several directories to be searched by separating
+          the directory names with colons (:) on the command line.
+
+  -e command ...
+          Attempt to locate and display the names and short descriptions of
+          manual pages related to the given commands. The commands may be
+          separated by commas, or by spaces if the list is enclosed in
+          quotes. The full name of command must be given; however, man is
+          insensitive to its case.
+
+          man  -e is equivalent to the whatis(C) command.
+
+  -f      FIRST mode. Display only the first matching title. Incompatible with
+           -a option. This option is equivalent to specifying MODE=FIRST in
+          /etc/default/man.
+
+  -k keyword ...
+          Output the name and short description of each manual page that has
+          at least one of the specified keywords in its short description.
+          The search is insensitive to case, and matches on parts of words.
+          For example, a search for the keyword ``compile'' will match on
+          ``Compiler''. The keywords may be separated by commas, or by spaces
+          if the list is enclosed in quotes.
+
+          man  -k is equivalent to the apropos(C) command.
+
+  -p pager
+          Select a paging program pager to display the entry. Paging systems
+          such as more(C), pg(C), cat(C), or any custom pagers that you may
+          have are valid arguments for this option.
+
+          The default pager, pg, set in /etc/default/man, may be overridden by
+          setting the environment variable PAGER to the name of a suitable
+          paging program. The pager defined by -p overrides both of these.
+
+  -t proc
+          Indicate that if an unprocessed manual page is available, it is to
+          be passed to proc for formatting. proc can be any command script in
+           /usr/man/bin or an absolute filename of a text processing program
+          elsewhere on the system.
+
+  -T term
+          Format the entry and pass the given term value to the processing
+          program, then print it on the standard output (usually, the
+          terminal), where term is the terminal type (see term(M) and the
+          explanation below).
+
+  -w      Print on the standard output only the pathnames of the entries.
+
+  Section names
+  +++++++++++++
+
+  The names and general descriptions of manual page sections include:
+
+   ADM   System administration commands
+   C     User commands
+   F     File formats
+   HW    Hardware dependent features
+   M     Miscellaneous
+   TCL   SCO Visual Tcl(TM) commands
+
+
+  You will only have access to the Development System, device driver, and
+  networking manual pages if you have installed these software products on
+  your system.
+
+  You can add new manual page sections in the /usr/man directory hierarchy.
+  For example, you could use the directory /usr/man/man.LOCAL to hold manual
+  pages that are local to your system.
+
+  Directory structure
+  +++++++++++++++++++
+
+  The HTML source files for SCO-supplied manual pages are held in compressed
+  form (with the extension .Z) in the /usr/lib/scohelp/man/html.section
+  directory hierarchy.
+
+  The /usr/lib/scohelp/man/index* files list the manual page names, subsidiary
+  entries, and the file where they are described. The format of these files
+  is described on the index(F) manual page.
+
+  The /usr/lib/scohelp/man/whatis* files are databases of keywords used by the
+   whatis(C) and apropos(C) commands, and created using makewhatis(ADM). The
+  format of these files is described on the whatis(F) manual page.
+
+  Any traditional-format manual page sections that you install should be
+  placed in the /usr/man/ directory hierarchy. Such manual page sections
+  traditionally have two directories in /usr/man. These directories are
+  called man.section and cat.section where section is the mnemonic name of
+  the manual page section. For example, the LOCAL manual section would
+  comprise the two directories:
+
+  /usr/man/man.LOCAL
+          unprocessed source text
+
+  /usr/man/cat.LOCAL
+          printable processed output
+
+  If a manual page title is requested, man checks both directories. The most
+  recent copy of the manual page is used as the current copy. If the most
+  recent title is in the source text directory and it is processed by the
+  default processor with the default terminal type, a display copy of the
+  output is placed in the cat directory for future use. Note that a file that
+  must be processed takes longer to appear on the screen than a display copy.
+
+  Default man settings
+  ++++++++++++++++++++
+
+  The file /etc/default/man contains the default settings for the man utility.
+  The following variables are set in /etc/default/man:
+
+  MANPATH
+          Changes or augments the path man searches for entries. man looks for
+          the specified manual page title in the section directories in the
+          order specified by MANPATH.
+
+          Multiple directories set with this variable must be delimited by
+          colon characters (:). If the MANPATH environment variable is
+          present, the directories are searched in the order that they
+          appear. The entry scohelp must appear in the MANPATH list for the
+          SCO-supplied manual pages to be included in the search path.
+
+          Alternate subdirectories are expected to have the same hierarchical
+          structure as the default directories in /usr/lib/scohelp/man or the
+          traditional directory structure under /usr/man.
+
+  MANPORT
+          The TCP port number for the remote manual page server. Normally set
+          to 8080. Not used if the manual page server is the local machine.
+
+  MANSERVER
+          Defines the name of the host machine that is serving manual pages
+          using scohttp(ADM). If set to localhost, man uses a UNIX domain
+          socket connection to the scohttpd daemon on the local machine.
+
+          If MANSERVER specifies a remote manual page server which either does
+          not respond or which cannot find the requested manual page, man
+          looks for the manual page in the /usr/lib/scohelp/man directory
+          hierarchy on the local machine.
+
+  MANSOCKETFILE
+          Specifies a temporary file to be used to establish a UNIX domain
+          socket connection to the scohttpd daemon.
+
+  MODE    If set to ALL, display all matching manual pages. If set to FIRST,
+          display only the first matching title. May be overridden using the
+           -a and -f options.
+
+  ORDER   Specifies the order in which to search the manual page sections for
+          a specified manual page title if a section is not also specified.
+
+  PAGER   Specifies the paging program to be used. May be overridden using the
+           -p option.
+
+  TERM    Specifies the terminal type on which output is to be printed. May be
+          overridden using the -T option.
+
+  The following default entries appear in /etc/default/man:
+
+     PAGER=/usr/bin/pg
+     MODE=FIRST
+     ORDER=C:S:CP:CT:M:F:HW:DOS:UCB:LOCAL
+     MANPATH=scohelp:/usr/man
+     TERM=lp
+     PROC=nr
+     MANSERVER=localhost
+     MANSOCKETFILE=/usr/tmp/scohelp.socket
+     MANPORT=8080
+
+  You can select a different paging system, search path, terminal type, search
+  order, mode, and processor for the man system by changing the information
+  in this file.
+
+  To change the search order for manual page sections, edit the list following
+  the ORDER variable. Be certain the section names are separated with colons
+  (:). Section names not present in ORDER are searched in arbitrary order
+  after those specified in /etc/default/man.
+
+  Environment variables
+  +++++++++++++++++++++
+
+  If set, the following environment variables override the default values
+  defined in /etc/default/man:
+
+  MANPATH
+
+  MANPORT
+
+  MANSERVER
+
+  MANSOCKETFILE
+
+  PAGER  
+
+  See the ``Default man settings'' section for the definitions of these
+  variables.
+
+  Creating new manual page entries
+  ++++++++++++++++++++++++++++++++
+
+  Follow these steps to make new manual pages (created using troff) available
+  to users:
+
+  1. Log in as root.
+
+  2. Place the file containing the new manual page in the /usr/man/man.section
+     directory structure.
+
+  3. If desired, use the command chmod  444 filename to make the file readable
+     (but not writable) by all users.
+
+  Once you have performed these steps, any user can view the new page in the
+  same manner as any other manual page.
+
+  Additionally, you can create your own custom sections by creating another
+  manual directory and putting it in the MANPATH. For example, if
+  subdirectories man.XXXX and cat.XXXX are present, then man recognizes that
+  ``XXXX'' is a valid manual page section.
+
+  If you wish to specify a program to process your custom manual pages, use
+  the -tproc flag of man. proc can be any shell script in /usr/man/bin. To
+  place a copy of the manual page in the cat directory, use the tee(C)
+  command to send the output to a file, as well as to the standard output.
+
+  Your command should have the form:
+
+  man  -tproc filename | tee pathname
+
+  In the above example, proc is the text processing script, filename is the
+  manual page source file, and pathname is the path of the directory for the
+  cat-able output.
+
+  If you wish to create a manual page section in HTML format, follow these
+  rules:
+
+   o The directory containing the manual page section must be called html.
+     section and it must exist under one of the directories named by MAPPATH.
+
+   o The manual page entries in html.section must be named title.section.html.
+
+   o The commands named on the manual pages must appear in the index file in
+     the directory above the directory where they are stored.
+
+   o There must be a CONTENTS.html file in the same directory as the manual
+     pages. This file lists references to all the manual page entries in that
+     directory.
+
+  Creating index and whatis files
+  +++++++++++++++++++++++++++++++
+
+  man uses a manual page index to locate multiple commands that are listed on
+  the same page as well as commands that have pages in several different
+  sections. The whatis(C) and apropos(C) commands use the whatis keyword
+  database to give you a short description of a command or to search for a
+  manual page relating to a particular topic.
+
+  If you want to create index and whatis files for your custom manual page
+  sections, they should exist in the directory above that containing the
+  manual page files. The index and whatis files must have the same format as
+  the files /usr/lib/scohelp/man/index* and /usr/lib/scohelp/man/whatis*.
+  These file formats are defined in index(F) and whatis(F). If your manual
+  page source files are in troff format, you can create a whatis keyword
+  database using the makewhatis(ADM) command.
+
+  Examples
+  ========
+
+  To display this entry:
+
+  man  CC  man
+
+  To retrieve all the section entries for cpio (for example, cpio(F) and cpio
+  (C)) and display them using more:
+
+  man  -a  -p  more  cpio
+
+  Limitations
+  ===========
+
+  The entries in some equations and tables may be either lost or approximated
+  as they cannot be reproduced exactly online.
+
+  Files
+  =====
+
+  /usr/lib/scohelp/man/html.section
+          directories containing HTML source for manual pages
+
+  /usr/lib/scohelp/man/html.section/*.section.html
+          manual pages in HTML
+
+  /usr/lib/scohelp/man/index
+          database of manual page names and sections
+
+  /usr/lib/scohelp/man/whatis
+          database of keywords
+
+  See also
+  ========
+
+  apropos(C), environ(M), index(F), makewhatis(ADM), term(M), whatis(C),
+  whatis(F)
+
+  Standards conformance
+  =====================
+
+  man is conformant with X/Open CAE Specification, Commands and Utilities,
+  Issue 4, 1992.
+
+  08 December 1994

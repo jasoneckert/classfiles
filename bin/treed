@@ -1,0 +1,15 @@
+:
+[ $# -eq 0 ] && {
+	echo "usage: $0 directory" >&2
+	exit 1
+}
+base=$1
+export base
+echo "$base"
+find $base -print | sed '
+	s:^'$base':|:
+	s:/\([^/]*\)$:?? \1:
+	s:/[^ ?/]*:   |:g
+	s:?:_:g
+	'
+
